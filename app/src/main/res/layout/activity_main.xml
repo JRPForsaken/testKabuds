@@ -10,15 +10,6 @@
     tools:context=".MainActivity">
 
 
-    <EditText
-        android:id="@+id/fullNameInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="37dp"
-        android:text="@string/signature"
-        app:layout_constraintEnd_toStartOf="@+id/clearButton"
-        app:layout_constraintTop_toBottomOf="@+id/clearButton" />
-
     <com.github.gcacace.signaturepad.views.SignaturePad
         android:id="@+id/signature_pad"
         android:layout_width="379dp"
@@ -102,11 +93,28 @@
         android:layout_marginTop="122dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:text=""
         app:layout_constraintBottom_toTopOf="@+id/imagesignatura"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/errorname"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="175dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="8dp"
+        android:text=""
+        android:textColor="#E91E1E"
+        app:layout_constraintBottom_toTopOf="@+id/imagesignatura"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
