@@ -12,10 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.github.gcacace.signaturepad.views.SignaturePad
+import org.w3c.dom.Text
 
 
 class MainActivity : AppCompatActivity() {
-
 
 
     @SuppressLint("MissingInflatedId")
@@ -33,27 +33,39 @@ class MainActivity : AppCompatActivity() {
         val buttonClear: Button = findViewById(R.id.clearButton)
         val buttonSign: Button = findViewById(R.id.signButton)
         val imagebiyu: ImageView = findViewById(R.id.imagesignatura)
-        val fullname: EditText = findViewById(R.id.fullNameInput) // Change TextView to EditText
         val printneym: TextView = findViewById(R.id.printname)
+        val name: TextView = findViewById(R.id.textInputEditText)
+        val errortext: TextView = findViewById(R.id.errorname)
 
         buttonSign.setOnClickListener {
             // Get the inputted name from the fullname EditText
-            val signeeNameText = fullname.text.toString()
+            val signeeNameText = name.text
             // Update the TextView to show the inputted name
             printneym.text = signeeNameText
 
             // Capture the signature as a Bitmap
             val bitmap = signaturePad.signatureBitmap
-            imagebiyu.setImageBitmap(bitmap) // Display the signature image
+            //imagebiyu.setImageBitmap(bitmap) // Display the signature image
             //TODO: Edit text saving
+            //printneym.text = name.text
+
+            if (signaturePad.isEmpty || signeeNameText.isEmpty()) {
+                errortext.text = "Please enter a name/signature."
+            } else {
+                errortext.text = ""
+                printneym.text = name.text
+                imagebiyu.setImageBitmap(bitmap)
+            }
         }
         buttonClear.setOnClickListener {
-            signaturePad.clear()
-            //TODO: Easy name clearing
-
+            signaturePad.clear() // Clear the signature Pad
+            imagebiyu.setImageBitmap(null)
+            printneym.text = null // Clear the displayed name as well
+            errortext.text = null
+            name.text = null
         }
     }
-
+    //TODO LIST PDF
 
     fun Clear(view: View) {}
 }
