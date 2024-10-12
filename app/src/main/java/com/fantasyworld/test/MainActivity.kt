@@ -11,21 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.car.ui.recyclerview.ScrollBar
 import com.github.gcacace.signaturepad.views.SignaturePad
-import com.github.barteksc.pdfviewer.PDFView;
-//import com.github.barteksc.pdfviewer.ScrollBar;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.shockwave.pdfium.PdfDocument;
-
-//import org.androidannotations.annotations.AfterViews;
-//import org.androidannotations.annotations.EActivity;
-//import org.androidannotations.annotations.NonConfigurationInstance;
-//import org.androidannotations.annotations.OnActivityResult;
-//import org.androidannotations.annotations.OptionsItem;
-//import org.androidannotations.annotations.OptionsMenu;
-//import org.androidannotations.annotations.ViewById;
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,7 +29,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var printName: TextView
     private lateinit var nameInput: TextView
     private lateinit var errorText: TextView
-    private lateinit var pdfView: PDFView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupClickListeners()
-
-        //PDF Component
     }
+
 
     private fun initViews() {
         filePathTextView = findViewById(R.id.filePathTextView)
@@ -61,18 +45,19 @@ class MainActivity : AppCompatActivity() {
         signaturePad = findViewById(R.id.signature_pad)
         buttonClear = findViewById(R.id.clearButton)
         buttonSign = findViewById(R.id.signButton)
-        //imageSign = findViewById(R.id.imagesignatura)
+        imageSign = findViewById(R.id.imagesignatura)
         printName = findViewById(R.id.printname)
         nameInput = findViewById(R.id.textInputEditText)
         errorText = findViewById(R.id.errorname)
-        pdfView = findViewById(R.id.pdfView)
     }
+
 
     private fun setupClickListeners() {
         buttonSign.setOnClickListener { handleSignature() }
         buttonClear.setOnClickListener { clearSignature() }
         uploadButton.setOnClickListener { uploadPdfFile() }
     }
+
 
     private fun uploadPdfFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -85,9 +70,9 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == pickPDFFile && resultCode == RESULT_OK && data != null) {
             val uri = data.data
             filePathTextView.text = uri?.path
-            displayPdfFile(uri?.path ?: "")
         }
     }
+
 
     private fun queryPdfFiles() {
         val resolver: ContentResolver = contentResolver
@@ -155,10 +140,6 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.clear()
     }
+    //TODO: implement PDF view, Write and Save at /ContractWaiver/SignedPDFs
 
-    private fun displayPdfFile(pdfPath: String) {
-        pdfView.fromAsset(pdfPath)
-            .enableSwipe(true)
-            .load()
-    }
 }
