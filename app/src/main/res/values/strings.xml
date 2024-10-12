@@ -2,4 +2,11 @@
     <string name="app_name">test</string>
     <string name="signature">Signature</string>
     <string name="clear">Clear</string>
+    <string name="signature1">Signature</string>
+    <string name="clear1">Clear</string>
+    <string name="sign1">Sign</string>
+    <string name="full_name1">Full name</string>
+    <string name="view_signature_test1">Signature</string>
+    <string name="upload_contract1">Upload File</string>
+    <string name="no_file_selected1">no file selected</string>
 </resources>

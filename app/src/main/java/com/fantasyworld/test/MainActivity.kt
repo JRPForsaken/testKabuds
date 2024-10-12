@@ -11,24 +11,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.car.ui.recyclerview.ScrollBar
+import com.github.barteksc.pdfviewer.PDFView
 import com.github.gcacace.signaturepad.views.SignaturePad
-import com.github.barteksc.pdfviewer.PDFView;
-//import com.github.barteksc.pdfviewer.ScrollBar;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.shockwave.pdfium.PdfDocument;
-
-//import org.androidannotations.annotations.AfterViews;
-//import org.androidannotations.annotations.EActivity;
-//import org.androidannotations.annotations.NonConfigurationInstance;
-//import org.androidannotations.annotations.OnActivityResult;
-//import org.androidannotations.annotations.OptionsItem;
-//import org.androidannotations.annotations.OptionsMenu;
-//import org.androidannotations.annotations.ViewById;
+//import com.github.mhiew.android_pdf_viewer.PDFView
 
 class MainActivity : AppCompatActivity() {
-
+//TODO: Finish the PDF functionality
     private val storagePermissionCode = 1001
     private val pickPDFFile = 2001
     private lateinit var filePathTextView: TextView
@@ -39,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signaturePad: SignaturePad
     private lateinit var buttonClear: Button
     private lateinit var buttonSign: Button
-    private lateinit var imageSign: ImageView
+    //private lateinit var imageSign: ImageView
     private lateinit var printName: TextView
     private lateinit var nameInput: TextView
     private lateinit var errorText: TextView
@@ -128,21 +116,21 @@ class MainActivity : AppCompatActivity() {
 
             // Scale down the bitmap to reduce memory usage
             val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 200, 100, true) // Adjust width and height as needed
-            imageSign.setImageBitmap(scaledBitmap)
+            //imageSign.setImageBitmap(scaledBitmap)
         }
     }
 
     // Clear signature and reset UI
     private fun clearSignature() {
         signaturePad.clear()
-        imageSign.setImageBitmap(null)
+        //imageSign.setImageBitmap(null)
         printName.text = null
         errorText.text = null
         nameInput.text = null
     }
 
     private fun clearResources() {
-        imageSign.setImageBitmap(null)
+        //imageSign.setImageBitmap(null)
     }
 
     override fun onDestroy() {
