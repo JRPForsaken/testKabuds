@@ -1,7 +1,6 @@
 package com.fantasyworld.test
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -15,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.gcacace.signaturepad.views.SignaturePad
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
+import com.github.barteksc.pdfviewer.util.FitPolicy
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -36,6 +38,9 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupClickListeners()
+
+        // Disable state saving for SignaturePad to prevent bitmap parcel issues
+        signaturePad.setSaveEnabled(false)
     }
 
     private fun initViews() {
@@ -80,25 +85,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getRealPathFromURI(contentUri: Uri): String? {
-        val cursor = contentResolver.query(contentUri, null, null, null, null)
-        cursor?.use {
-            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
-            it.moveToFirst()
-            return it.getString(columnIndex)
+        val fileDescriptor = contentResolver.openFileDescriptor(contentUri, "r") ?: return null
+        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
+        val file = File(cacheDir, "tempFile.pdf")
+        FileOutputStream(file).use { outputStream ->
+            inputStream.copyTo(outputStream)
         }
-        return null
+        inputStream.close()
+        return file.absolutePath
     }
 
-    private fun readPdfFile(pdfPath: String) {
-        val file = File(pdfPath)
-        if (file.exists()) {
-            pdfView.fromFile(file)
-                .enableSwipe(true)
-                .swipeHorizontal(false)
+    private fun readPdfFile(filePath: String) {
+        val pdfFile = File(filePath)
+        if (pdfFile.exists()) {
+            pdfView.fromFile(pdfFile)
+                .enableSwipe(true) // enables horizontal swipe
+                .swipeHorizontal(false) // set false for vertical scrolling
                 .enableDoubletap(true)
+                .defaultPage(0) // start from the first page
+                .scrollHandle(DefaultScrollHandle(this)) // add a scroll bar handle
+                .spacing(10) // space between pages
+                .pageFitPolicy(FitPolicy.WIDTH) // fit pages to the width of the view
                 .load()
         } else {
-            Log.e("PDF Reader", "File does not exist: $pdfPath")
+            Log.e("PDF Reader", "File does not exist")
         }
     }
 
@@ -160,5 +170,11 @@ class MainActivity : AppCompatActivity() {
             // Optionally, you can display the loaded bitmap in an ImageView
             // imageSign.setImageBitmap(bitmap)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Clear the signature pad to avoid any bitmap-related crash during parceling
+        signaturePad.clear()
     }
 }

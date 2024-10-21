@@ -15,7 +15,6 @@
         android:layout_width="379dp"
         android:layout_height="151dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="19dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="#999999"
@@ -31,8 +30,8 @@
         android:id="@+id/clearButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="35dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/clear1"
         app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
         app:layout_constraintTop_toTopOf="@+id/textInputLayout" />
@@ -42,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="32dp"
         android:text="@string/sign1"
         app:layout_constraintStart_toStartOf="@+id/textInputEditText"
         app:layout_constraintTop_toTopOf="@+id/textInputLayout" />
@@ -56,7 +55,8 @@
         android:layout_marginBottom="246dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/errorname" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/textInputEditText"
@@ -64,80 +64,85 @@
         android:layout_height="56dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="246dp"
+        android:layout_marginBottom="212dp"
         android:hint="@string/full_name1"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/uploadButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/upload_contract1"
+        app:layout_constraintEnd_toStartOf="@+id/errorname"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filePathTextView" />
 
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdfView"
-        android:layout_width="401dp"
-        android:layout_height="242dp"
+        android:layout_width="397dp"
+        android:layout_height="357dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="68dp"
         android:contentDescription="@string/view_signature_test1"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintBottom_toTopOf="@+id/textInputEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        tools:srcCompat="@tools:sample/backgrounds/scenic">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        </LinearLayout>
+    </com.github.barteksc.pdfviewer.PDFView>
 
     <TextView
         android:id="@+id/printname"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="386dp"
+        android:layout_height="17dp"
         android:layout_marginStart="14dp"
-        android:layout_marginTop="122dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="8dp"
         android:text=""
         app:layout_constraintBottom_toTopOf="@+id/pdfView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uploadButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/filePathTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:text="@string/no_file_selected1"
+        app:layout_constraintBottom_toTopOf="@+id/errorname"
+        app:layout_constraintStart_toStartOf="@+id/uploadButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/errorname"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="409dp"
         android:text=""
         android:textColor="#E91E1E"
-        app:layout_constraintBottom_toTopOf="@+id/pdfView"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/uploadButton"
-            android:layout_width="164dp"
-            android:layout_height="wrap_content"
-            android:text="@string/upload_contract1" />
-
-        <TextView
-            android:id="@+id/filePathTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/no_file_selected1" />
-    </LinearLayout>
-
-
-
-
+        app:layout_constraintStart_toEndOf="@+id/uploadButton"
+        app:layout_constraintTop_toBottomOf="@+id/filePathTextView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
