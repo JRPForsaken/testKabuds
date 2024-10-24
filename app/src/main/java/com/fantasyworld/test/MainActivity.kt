@@ -16,8 +16,19 @@ import com.github.gcacace.signaturepad.views.SignaturePad
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.github.barteksc.pdfviewer.util.FitPolicy
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfReader
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Image
+import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.kernel.font.PdfFontFactory
+import com.itextpdf.kernel.pdf.PdfName
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -31,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var errorText: TextView
     private lateinit var pdfView: PDFView
     private var savedBitmapPath: String? = null
+    private var pdfFilePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,9 +86,9 @@ class MainActivity : AppCompatActivity() {
             val uri = data.data
             uri?.let {
                 filePathTextView.text = it.path
-                val pdfPath = getRealPathFromURI(it)
-                if (pdfPath != null) {
-                    readPdfFile(pdfPath)
+                pdfFilePath = getRealPathFromURI(it)
+                if (pdfFilePath != null) {
+                    readPdfFile(pdfFilePath!!)
                 } else {
                     Log.e("PDF Reader", "Failed to get the file path from URI")
                 }
@@ -114,7 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun handleSignature() {
-        val signeeNameText = nameInput.text
+        val signeeNameText = nameInput.text.toString()
         val bitmap = signaturePad.signatureBitmap
 
         if (signaturePad.isEmpty || signeeNameText.isEmpty()) {
@@ -125,9 +137,8 @@ class MainActivity : AppCompatActivity() {
 
             // Save the bitmap to a file instead of passing it directly
             savedBitmapPath = saveBitmapToFile(bitmap)
-            if (savedBitmapPath != null) {
-                // Optionally, you can display the saved bitmap in an ImageView
-                // imageSign.setImageBitmap(BitmapFactory.decodeFile(savedBitmapPath))
+            if (savedBitmapPath != null && pdfFilePath != null) {
+                modifyPdfWithUserInfo(pdfFilePath!!, signeeNameText, bitmap)
             }
         }
     }
@@ -142,6 +153,70 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("Signature", "Error saving bitmap", e)
             null
+        }
+    }
+
+    private fun modifyPdfWithUserInfo(pdfFilePath: String, userName: String, signature: Bitmap) {
+        try {
+            val outputFile = File(getExternalFilesDir(null), "$userName.pdf")
+            val pdfReader = PdfReader(File(pdfFilePath))
+            val pdfWriter = PdfWriter(outputFile)
+
+            // Create PdfDocument with custom options to avoid metadata parsing
+            val pdfDoc = PdfDocument(pdfReader, pdfWriter)
+
+            // Remove the XMP metadata if it exists - this should be in the document catalog
+            try {
+                pdfDoc.catalog.remove(PdfName.Metadata)
+            } catch (e: Exception) {
+                Log.e("Metadata Removal", "Failed to remove XMP metadata", e)
+            }
+
+            // Access the third page for modification
+            val page = pdfDoc.getPage(3)
+            val pdfCanvas = PdfCanvas(page)
+
+            // Load the font for writing text (using Helvetica)
+            val font = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA)
+
+            // Coordinates for name, signature, and date (adjust these as per your PDF layout)
+            val nameX = 150f
+            val nameY = 450f
+            val signatureX = 150f
+            val signatureY = 400f
+            val dateX = 150f
+            val dateY = 350f
+
+            // Write the name on the PDF
+            pdfCanvas.beginText()
+            pdfCanvas.setFontAndSize(font, 12f)
+            pdfCanvas.moveText(nameX.toDouble(), nameY.toDouble())
+            pdfCanvas.showText(userName)
+            pdfCanvas.endText()
+
+            // Convert the signature bitmap to an image and add it to the PDF
+            val signatureImage = Image(ImageDataFactory.create(savedBitmapPath))
+            signatureImage.setFixedPosition(signatureX, signatureY)
+            val document = Document(pdfDoc)
+            document.add(signatureImage)
+
+            // Write the current date on the PDF
+            val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
+            pdfCanvas.beginText()
+            pdfCanvas.setFontAndSize(font, 12f)
+            pdfCanvas.moveText(dateX.toDouble(), dateY.toDouble())
+            pdfCanvas.showText(currentDate)
+            pdfCanvas.endText()
+
+            // Close the document and save changes
+            document.close()
+            pdfDoc.close()
+
+            // Reload the updated PDF in the viewer
+            readPdfFile(outputFile.absolutePath)
+        } catch (e: Exception) {
+            Log.e("PDF Modification", "Error modifying PDF", e)
+            e.printStackTrace()
         }
     }
 
@@ -167,8 +242,6 @@ class MainActivity : AppCompatActivity() {
         // Load the saved bitmap from the file
         if (savedBitmapPath != null) {
             val bitmap = BitmapFactory.decodeFile(savedBitmapPath)
-            // Optionally, you can display the loaded bitmap in an ImageView
-            // imageSign.setImageBitmap(bitmap)
         }
     }
 
