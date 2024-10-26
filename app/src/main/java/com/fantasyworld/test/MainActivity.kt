@@ -1,9 +1,9 @@
 package com.fantasyworld.test
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -23,15 +23,18 @@ import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfReader
 import com.itextpdf.kernel.pdf.PdfWriter
-import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Image
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.kernel.font.PdfFontFactory
 import com.itextpdf.kernel.pdf.PdfName
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas
+import android.Manifest
+import android.os.Environment
+import androidx.core.app.ActivityCompat
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
+    private val pdfFilePrefKey = "last_picked_pdf"
     private lateinit var filePathTextView: TextView
     private lateinit var uploadButton: Button
     private lateinit var signaturePad: SignaturePad
@@ -50,9 +53,17 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupClickListeners()
-
-        // Disable state saving for SignaturePad to prevent bitmap parcel issues
         signaturePad.setSaveEnabled(false)
+
+        // Load the last picked PDF if available
+        pdfFilePath = loadLastPickedPdfPath()
+        if (pdfFilePath != null) {
+            readPdfFile(pdfFilePath!!)
+        }
+    }
+
+    private fun requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
     }
 
     private fun initViews() {
@@ -85,12 +96,11 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == pickPDFFile && resultCode == RESULT_OK && data != null) {
             val uri = data.data
             uri?.let {
-                filePathTextView.text = it.path
                 pdfFilePath = getRealPathFromURI(it)
-                if (pdfFilePath != null) {
-                    readPdfFile(pdfFilePath!!)
-                } else {
-                    Log.e("PDF Reader", "Failed to get the file path from URI")
+                pdfFilePath?.let { path ->
+                    saveLastPickedPdfPath(path)
+                    readPdfFile(path)
+                    filePathTextView.text = path
                 }
             }
         }
@@ -111,23 +121,36 @@ class MainActivity : AppCompatActivity() {
         val pdfFile = File(filePath)
         if (pdfFile.exists()) {
             pdfView.fromFile(pdfFile)
-                .enableSwipe(true) // enables horizontal swipe
-                .swipeHorizontal(false) // set false for vertical scrolling
+                .enableSwipe(true)
+                .swipeHorizontal(false)
                 .enableDoubletap(true)
-                .defaultPage(0) // start from the first page
-                .scrollHandle(DefaultScrollHandle(this)) // add a scroll bar handle
-                .spacing(10) // space between pages
-                .pageFitPolicy(FitPolicy.WIDTH) // fit pages to the width of the view
+                .defaultPage(0)
+                .scrollHandle(DefaultScrollHandle(this))
+                .spacing(10)
+                .pageFitPolicy(FitPolicy.WIDTH)
                 .load()
         } else {
             Log.e("PDF Reader", "File does not exist")
         }
     }
 
+    private fun saveLastPickedPdfPath(path: String) {
+        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString(pdfFilePrefKey, path)
+            apply()
+        }
+    }
+
+    private fun loadLastPickedPdfPath(): String? {
+        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        return sharedPref.getString(pdfFilePrefKey, null)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun handleSignature() {
         val signeeNameText = nameInput.text.toString()
-        val bitmap = signaturePad.signatureBitmap
+        val originalBitmap = signaturePad.signatureBitmap
 
         if (signaturePad.isEmpty || signeeNameText.isEmpty()) {
             errorText.text = "Please enter a name/signature."
@@ -135,12 +158,31 @@ class MainActivity : AppCompatActivity() {
             errorText.text = ""
             printName.text = signeeNameText
 
-            // Save the bitmap to a file instead of passing it directly
-            savedBitmapPath = saveBitmapToFile(bitmap)
+            val transparentBitmap = createTransparentBitmap(originalBitmap)
+            savedBitmapPath = saveBitmapToFile(transparentBitmap)
+
             if (savedBitmapPath != null && pdfFilePath != null) {
-                modifyPdfWithUserInfo(pdfFilePath!!, signeeNameText, bitmap)
+                modifyPdfWithUserInfo(pdfFilePath!!, signeeNameText, savedBitmapPath!!)
             }
         }
+    }
+
+    private fun createTransparentBitmap(bitmap: Bitmap): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+        val transparentBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val pixel = bitmap.getPixel(x, y)
+                if (pixel == android.graphics.Color.WHITE) {
+                    transparentBitmap.setPixel(x, y, android.graphics.Color.TRANSPARENT)
+                } else {
+                    transparentBitmap.setPixel(x, y, pixel)
+                }
+            }
+        }
+        return transparentBitmap
     }
 
     private fun saveBitmapToFile(bitmap: Bitmap): String? {
@@ -149,105 +191,75 @@ class MainActivity : AppCompatActivity() {
             FileOutputStream(file).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
-            file.absolutePath // Return the file path
+            file.absolutePath
         } catch (e: Exception) {
             Log.e("Signature", "Error saving bitmap", e)
             null
         }
     }
 
-    private fun modifyPdfWithUserInfo(pdfFilePath: String, userName: String, signature: Bitmap) {
+    private fun modifyPdfWithUserInfo(pdfFilePath: String, userName: String, signaturePath: String) {
         try {
-            val outputFile = File(getExternalFilesDir(null), "$userName.pdf")
-            val pdfReader = PdfReader(File(pdfFilePath))
-            val pdfWriter = PdfWriter(outputFile)
-
-            // Create PdfDocument with custom options to avoid metadata parsing
-            val pdfDoc = PdfDocument(pdfReader, pdfWriter)
-
-            // Remove the XMP metadata if it exists - this should be in the document catalog
-            try {
-                pdfDoc.catalog.remove(PdfName.Metadata)
-            } catch (e: Exception) {
-                Log.e("Metadata Removal", "Failed to remove XMP metadata", e)
+            if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) {
+                Log.e("PDF Modification", "External storage is not mounted or writable.")
+                return
             }
 
-            // Access the third page for modification
-            val page = pdfDoc.getPage(3)
-            val pdfCanvas = PdfCanvas(page)
+            val documentsDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "SignedPDF")
+            if (!documentsDir.exists()) documentsDir.mkdirs()
 
-            // Load the font for writing text (using Helvetica)
+            val outputFile = File(documentsDir, "$userName-signed.pdf")
+            val pdfReader = PdfReader(File(pdfFilePath))
+            val pdfWriter = PdfWriter(outputFile)
+            val pdfDoc = PdfDocument(pdfReader, pdfWriter)
+            pdfDoc.catalog.remove(PdfName.Metadata)
+
+            val lastPage = pdfDoc.getPage(pdfDoc.numberOfPages)
+            val pageSize = lastPage.pageSize
+            val pdfCanvas = PdfCanvas(lastPage)
             val font = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA)
 
-            // Coordinates for name, signature, and date (adjust these as per your PDF layout)
-            val nameX = 150f
-            val nameY = 450f
-            val signatureX = 150f
-            val signatureY = 400f
-            val dateX = 150f
-            val dateY = 350f
+            val centerX = pageSize.width / 2
+            val marginBottom = 50f
 
-            // Write the name on the PDF
+            val nameY = pageSize.bottom + marginBottom + 50f
+            val dateY = pageSize.bottom + marginBottom + 30f
+            val signatureY = pageSize.bottom + marginBottom + 10f
+
             pdfCanvas.beginText()
             pdfCanvas.setFontAndSize(font, 12f)
-            pdfCanvas.moveText(nameX.toDouble(), nameY.toDouble())
+            pdfCanvas.moveText((centerX - 50).toDouble(), nameY.toDouble())
             pdfCanvas.showText(userName)
             pdfCanvas.endText()
 
-            // Convert the signature bitmap to an image and add it to the PDF
-            val signatureImage = Image(ImageDataFactory.create(savedBitmapPath))
-            signatureImage.setFixedPosition(signatureX, signatureY)
-            val document = Document(pdfDoc)
-            document.add(signatureImage)
-
-            // Write the current date on the PDF
             val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
             pdfCanvas.beginText()
             pdfCanvas.setFontAndSize(font, 12f)
-            pdfCanvas.moveText(dateX.toDouble(), dateY.toDouble())
+            pdfCanvas.moveText((centerX - 50).toDouble(), dateY.toDouble())
             pdfCanvas.showText(currentDate)
             pdfCanvas.endText()
 
-            // Close the document and save changes
-            document.close()
-            pdfDoc.close()
+            val signatureImageData = ImageDataFactory.create(signaturePath)
+            pdfCanvas.addImage(
+                signatureImageData,
+                centerX - (150f / 2),
+                signatureY,
+                150f,
+                false
+            )
 
-            // Reload the updated PDF in the viewer
+            pdfDoc.close()
+            signaturePad.clear()
+            nameInput.text = null
+
             readPdfFile(outputFile.absolutePath)
         } catch (e: Exception) {
             Log.e("PDF Modification", "Error modifying PDF", e)
-            e.printStackTrace()
         }
     }
 
     private fun clearSignature() {
         signaturePad.clear()
-        printName.text = null
-        errorText.text = null
         nameInput.text = null
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        // Disable saving the SignaturePad state
-        outState.putBoolean("signature_pad_state", false)
-        // Save only essential data, e.g., the name input
-        outState.putString("nameInput", nameInput.text.toString())
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // Restore essential data
-        nameInput.setText(savedInstanceState.getString("nameInput", ""))
-        // Load the saved bitmap from the file
-        if (savedBitmapPath != null) {
-            val bitmap = BitmapFactory.decodeFile(savedBitmapPath)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        // Clear the signature pad to avoid any bitmap-related crash during parceling
-        signaturePad.clear()
     }
 }
