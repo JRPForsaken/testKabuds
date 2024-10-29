@@ -26,11 +26,17 @@ import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.layout.element.Image
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.kernel.font.PdfFontFactory
-import com.itextpdf.kernel.pdf.PdfName
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas
+import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor
+import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy
+import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo
 import android.Manifest
 import android.os.Environment
 import androidx.core.app.ActivityCompat
+import com.itextpdf.kernel.pdf.PdfName
+import com.itextpdf.kernel.pdf.canvas.parser.EventType
+import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor
+import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -200,66 +206,91 @@ class MainActivity : AppCompatActivity() {
 
     private fun modifyPdfWithUserInfo(pdfFilePath: String, userName: String, signaturePath: String) {
         try {
-            if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) {
-                Log.e("PDF Modification", "External storage is not mounted or writable.")
-                return
-            }
-
             val documentsDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "SignedPDF")
             if (!documentsDir.exists()) documentsDir.mkdirs()
-
             val outputFile = File(documentsDir, "$userName-signed.pdf")
+
             val pdfReader = PdfReader(File(pdfFilePath))
             val pdfWriter = PdfWriter(outputFile)
             val pdfDoc = PdfDocument(pdfReader, pdfWriter)
             pdfDoc.catalog.remove(PdfName.Metadata)
 
-            val lastPage = pdfDoc.getPage(pdfDoc.numberOfPages)
-            val pageSize = lastPage.pageSize
-            val pdfCanvas = PdfCanvas(lastPage)
+            // Initialize font
             val font = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA)
+            val detectedFields = detectFieldsInPdf(pdfDoc, listOf("Name", "Sign", "Date", "signature", "date"))
 
-            val centerX = pageSize.width / 2
-            val marginBottom = 50f
+            if (detectedFields.isNotEmpty()) {
+                for ((field, position) in detectedFields) {
+                    val pdfCanvas = PdfCanvas(pdfDoc.getPage(position.pageNumber))
 
-            val nameY = pageSize.bottom + marginBottom + 50f
-            val dateY = pageSize.bottom + marginBottom + 30f
-            val signatureY = pageSize.bottom + marginBottom + 10f
-
-            pdfCanvas.beginText()
-            pdfCanvas.setFontAndSize(font, 12f)
-            pdfCanvas.moveText((centerX - 50).toDouble(), nameY.toDouble())
-            pdfCanvas.showText(userName)
-            pdfCanvas.endText()
-
-            val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
-            pdfCanvas.beginText()
-            pdfCanvas.setFontAndSize(font, 12f)
-            pdfCanvas.moveText((centerX - 50).toDouble(), dateY.toDouble())
-            pdfCanvas.showText(currentDate)
-            pdfCanvas.endText()
-
-            val signatureImageData = ImageDataFactory.create(signaturePath)
-            pdfCanvas.addImage(
-                signatureImageData,
-                centerX - (150f / 2),
-                signatureY,
-                150f,
-                false
-            )
-
+                    when (field) {
+                        "Name", "name", "Name:", "I am" -> {
+                            pdfCanvas.beginText()
+                            pdfCanvas.setFontAndSize(font, 12f)
+                            // Adjust the y-coordinate to place the name below the field
+                            val adjustedY = position.y - 455 // Adjust as needed
+                            pdfCanvas.moveText((position.x + 12).toDouble(), adjustedY.toDouble())
+                            pdfCanvas.showText(userName)
+                            pdfCanvas.endText()
+                            Log.d("PDF Modification", "Placed name at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
+                        }
+                        "Sign", "signature", "Signature:" -> {
+                            val signatureImageData = ImageDataFactory.create(signaturePath)
+                            // Adjust the y-coordinate to place the signature below the field
+                            val adjustedY = position.y - 380 // Adjust as needed
+                            pdfCanvas.addImage(signatureImageData, position.x + 10, adjustedY - 120, 100f, false)
+                            Log.d("PDF Modification", "Placed signature at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
+                        }
+                        "Date", "date", "Date:", "On the" -> {
+                            val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
+                            pdfCanvas.beginText()
+                            pdfCanvas.setFontAndSize(font, 12f)
+                            // Adjust the y-coordinate to place the date below the field
+                            val adjustedY = position.y - 515 // Adjust as needed
+                            pdfCanvas.moveText((position.x + 10).toDouble(), adjustedY.toDouble())
+                            pdfCanvas.showText(currentDate)
+                            pdfCanvas.endText()
+                            Log.d("PDF Modification", "Placed date at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
+                        }
+                    }
+                }
+            }
             pdfDoc.close()
+            Log.d("PDF Modification", "PDF modified and saved to $outputFile")
             signaturePad.clear()
             nameInput.text = null
 
-            readPdfFile(outputFile.absolutePath)
         } catch (e: Exception) {
             Log.e("PDF Modification", "Error modifying PDF", e)
         }
     }
 
+    private fun detectFieldsInPdf(pdfDoc: PdfDocument, fields: List<String>): Map<String, Position> {
+        val fieldPositions = mutableMapOf<String, Position>()
+        for (i in 1..pdfDoc.numberOfPages) {
+            val page = pdfDoc.getPage(i)
+            val strategy = LocationTextExtractionStrategy()
+            PdfCanvasProcessor(strategy).processPageContent(page)
+
+            // Check for fields
+            val text = strategy.resultantText
+            fields.forEach { field ->
+                if (text.contains(field, ignoreCase = true)) {
+                    // Logic to calculate the position (for simplicity, assuming fixed positions)
+                    val position = Position(100f, 700f, i) // Replace with actual logic to find text position
+                    fieldPositions[field] = position
+                }
+            }
+        }
+        return fieldPositions
+    }
+
+    data class Position(val x: Float, val y: Float, val pageNumber: Int)
+
+
+
     private fun clearSignature() {
         signaturePad.clear()
-        nameInput.text = null
     }
 }
+
