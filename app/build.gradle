@@ -45,5 +45,6 @@ dependencies {
     androidTestImplementation libs.androidx.espresso.core
     implementation libs.signature.pad
     implementation libs.android.pdf.viewer
-    implementation libs.itext7.core
+    implementation 'com.itextpdf:itext7-core:7.1.15'
+    //implementation 'com.itextpdf:itextpdf:5.5.13.2'
 }

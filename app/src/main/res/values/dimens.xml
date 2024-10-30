@@ -1,0 +1,13 @@
+<resources>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="signature_pad_height">151dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="text_view_height">20dp</dimen> <!-- Add this line -->
+    <dimen name="text_input_edit_text_height">56dp</dimen> <!-- Add this line -->
+    <dimen name="pdf_view_height">357dp</dimen> <!-- Add this line -->
+</resources>

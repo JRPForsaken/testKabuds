@@ -1,0 +1,13 @@
+<resources>
+    <dimen name="padding_small">12dp</dimen>
+    <dimen name="padding_medium">20dp</dimen>
+    <dimen name="padding_large">30dp</dimen>
+    <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
+    <dimen name="signature_pad_height">200dp</dimen>
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="text_view_height">24dp</dimen> <!-- Adjusted for large devices -->
+    <dimen name="text_input_edit_text_height">64dp</dimen> <!-- Adjusted for large devices -->
+    <dimen name="pdf_view_height">400dp</dimen> <!-- Adjusted for large devices -->
+</resources>

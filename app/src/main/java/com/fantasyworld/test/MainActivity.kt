@@ -1,57 +1,59 @@
 package com.fantasyworld.test
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.github.barteksc.pdfviewer.PDFView
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
+import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.github.gcacace.signaturepad.views.SignaturePad
+import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.kernel.font.PdfFontFactory
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfName
+import com.itextpdf.kernel.pdf.PdfReader
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas
+import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor
+import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
-import java.util.*
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
-import com.github.barteksc.pdfviewer.util.FitPolicy
-import com.itextpdf.kernel.pdf.PdfDocument
-import com.itextpdf.kernel.pdf.PdfReader
-import com.itextpdf.kernel.pdf.PdfWriter
-import com.itextpdf.layout.element.Image
-import com.itextpdf.io.image.ImageDataFactory
-import com.itextpdf.kernel.font.PdfFontFactory
-import com.itextpdf.kernel.pdf.canvas.PdfCanvas
-import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor
-import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy
-import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo
-import android.Manifest
-import android.os.Environment
-import androidx.core.app.ActivityCompat
-import com.itextpdf.kernel.pdf.PdfName
-import com.itextpdf.kernel.pdf.canvas.parser.EventType
-import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor
-import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy
+import java.util.Date
+import java.util.Locale
+import com.google.android.material.snackbar.Snackbar
+import android.provider.DocumentsContract
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
     private val pdfFilePrefKey = "last_picked_pdf"
-    private lateinit var filePathTextView: TextView
+    //private lateinit var filePathTextView: TextView
     private lateinit var uploadButton: Button
     private lateinit var signaturePad: SignaturePad
     private lateinit var buttonClear: Button
     private lateinit var buttonSign: Button
-    private lateinit var printName: TextView
+    //private lateinit var printName: TextView
     private lateinit var nameInput: TextView
     private lateinit var errorText: TextView
+    private lateinit var buttonDocu: Button
+
     private lateinit var pdfView: PDFView
     private var savedBitmapPath: String? = null
     private var pdfFilePath: String? = null
+    private val density by lazy { resources.displayMetrics.density }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,16 @@ class MainActivity : AppCompatActivity() {
         if (pdfFilePath != null) {
             readPdfFile(pdfFilePath!!)
         }
+
+        // Dynamically scale elements based on screen density
+        scaleViews()
+    }
+
+    private fun scaleViews() {
+        // Example of scaling signature pad's height
+        signaturePad.layoutParams.width = (379 * density).toInt()
+        signaturePad.layoutParams.height = (151 * density).toInt()
+        signaturePad.requestLayout()
     }
 
     private fun requestStoragePermission() {
@@ -73,26 +85,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        filePathTextView = findViewById(R.id.filePathTextView)
+        //filePathTextView = findViewById(R.id.filePathTextView)
         uploadButton = findViewById(R.id.uploadButton)
         signaturePad = findViewById(R.id.signature_pad)
         buttonClear = findViewById(R.id.clearButton)
         buttonSign = findViewById(R.id.signButton)
-        printName = findViewById(R.id.printname)
+        //printName = findViewById(R.id.printname)
         nameInput = findViewById(R.id.textInputEditText)
         errorText = findViewById(R.id.errorname)
         pdfView = findViewById(R.id.pdfView)
+        buttonDocu = findViewById(R.id.buttonDocu)
     }
 
     private fun setupClickListeners() {
         buttonSign.setOnClickListener { handleSignature() }
         buttonClear.setOnClickListener { clearSignature() }
         uploadButton.setOnClickListener { uploadPdfFile() }
+        buttonDocu.setOnClickListener { openSignedPdfDirectory() }
     }
+
+
+
+    private fun openSignedPdfDirectory() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val signedPdfDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "SignedPDF")
+                putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.fromFile(signedPdfDir))
+            }
+        }
+
+        try {
+            val REQUEST_CODE_OPEN_DIRECTORY = 0
+            startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY)
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+            Snackbar.make(findViewById(android.R.id.content), "No file manager app found to open directory.", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
 
     private fun uploadPdfFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "application/pdf"
+            signaturePad.clear()
+            nameInput.text = null
         }
         startActivityForResult(intent, pickPDFFile)
     }
@@ -106,7 +144,8 @@ class MainActivity : AppCompatActivity() {
                 pdfFilePath?.let { path ->
                     saveLastPickedPdfPath(path)
                     readPdfFile(path)
-                    filePathTextView.text = path
+                    //filePathTextView.text = path
+                    Snackbar.make(findViewById(android.R.id.content), "PDF uploaded successfully!", Snackbar.LENGTH_SHORT).show()
                 }
             }
         }
@@ -132,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                 .enableDoubletap(true)
                 .defaultPage(0)
                 .scrollHandle(DefaultScrollHandle(this))
-                .spacing(10)
+                .spacing((10 * density).toInt()) // Scaled spacing
                 .pageFitPolicy(FitPolicy.WIDTH)
                 .load()
         } else {
@@ -162,13 +201,14 @@ class MainActivity : AppCompatActivity() {
             errorText.text = "Please enter a name/signature."
         } else {
             errorText.text = ""
-            printName.text = signeeNameText
+            //printName.text = signeeNameText
 
             val transparentBitmap = createTransparentBitmap(originalBitmap)
             savedBitmapPath = saveBitmapToFile(transparentBitmap)
 
             if (savedBitmapPath != null && pdfFilePath != null) {
                 modifyPdfWithUserInfo(pdfFilePath!!, signeeNameText, savedBitmapPath!!)
+                Snackbar.make(findViewById(android.R.id.content), "Signature saved successfully!", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
@@ -257,11 +297,14 @@ class MainActivity : AppCompatActivity() {
             }
             pdfDoc.close()
             Log.d("PDF Modification", "PDF modified and saved to $outputFile")
+            Snackbar.make(findViewById(android.R.id.content), "Signed!", Snackbar.LENGTH_SHORT).show()
             signaturePad.clear()
             nameInput.text = null
 
         } catch (e: Exception) {
             Log.e("PDF Modification", "Error modifying PDF", e)
+            Snackbar.make(findViewById(android.R.id.content), "Error modifying PDF: ${e.message}", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(findViewById(android.R.id.content), "Error on modifying!", Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -291,6 +334,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun clearSignature() {
         signaturePad.clear()
+        Snackbar.make(findViewById(android.R.id.content),"Cleared Signature", Snackbar.LENGTH_SHORT).show()
     }
 }
 

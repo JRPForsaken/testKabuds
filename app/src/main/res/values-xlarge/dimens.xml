@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="padding_small">16dp</dimen>
+    <dimen name="padding_medium">24dp</dimen>
+    <dimen name="padding_large">36dp</dimen>
+    <dimen name="text_size_small">18sp</dimen>
+    <dimen name="text_size_medium">20sp</dimen>
+    <dimen name="text_size_large">24sp</dimen>
+    <dimen name="signature_pad_height">250dp</dimen>
+    <dimen name="button_height">64dp</dimen>
+</resources>
