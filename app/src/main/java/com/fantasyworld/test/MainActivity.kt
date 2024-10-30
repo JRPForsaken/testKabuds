@@ -75,8 +75,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun scaleViews() {
         // Example of scaling signature pad's height
-        signaturePad.layoutParams.width = (379 * density).toInt()
-        signaturePad.layoutParams.height = (151 * density).toInt()
+        signaturePad.layoutParams.width = (579 * density).toInt()
+        signaturePad.layoutParams.height = (131 * density).toInt()
         signaturePad.requestLayout()
     }
 
