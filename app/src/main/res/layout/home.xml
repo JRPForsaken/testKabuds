@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B4F6D1F8">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="421dp"
+            android:layout_height="282dp"
+            app:srcCompat="@drawable/top_background"
+            tools:layout_editor_absoluteX="-7dp"
+            tools:layout_editor_absoluteY="-3dp" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="313dp"
+            android:layout_height="78dp"
+            android:text="Open PDF signer"
+            android:textSize="24sp"
+            tools:layout_editor_absoluteX="40dp"
+            tools:layout_editor_absoluteY="429dp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="406dp"
+            android:layout_height="184dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/fwlogo"
+            tools:layout_editor_absoluteY="4dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="360dp"
+            android:layout_height="49dp"
+            android:text="Press 'Open PDF Signer&quot; to get started on signing PDF documents."
+            android:textAlignment="center"
+            android:textSize="16sp"
+            tools:layout_editor_absoluteX="25dp"
+            tools:layout_editor_absoluteY="369dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
