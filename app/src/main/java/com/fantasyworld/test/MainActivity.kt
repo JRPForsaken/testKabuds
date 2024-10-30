@@ -337,4 +337,3 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(findViewById(android.R.id.content),"Cleared Signature", Snackbar.LENGTH_SHORT).show()
     }
 }
-
