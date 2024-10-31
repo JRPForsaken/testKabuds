@@ -13,10 +13,21 @@
     <!-- Upload Button -->
 
     <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bottom_wave2"
+        tools:layout_editor_absoluteY="488dp" />
+
+    <ImageView
         android:id="@+id/imageView5"
         android:layout_width="421dp"
         android:layout_height="286dp"
         app:srcCompat="@drawable/top_background"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-5dp"
         tools:layout_editor_absoluteY="-5dp" />
 
@@ -31,28 +42,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/uploadButton" />
 
+    <!-- Open File Button -->
+
+    <!-- Name Input Layout -->
+
     <Button
         android:id="@+id/uploadButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_200"
         android:text="Upload PDF"
-        app:layout_constraintEnd_toStartOf="@+id/buttonDocu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.918"
+        app:layout_constraintStart_toEndOf="@+id/buttonback"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.45" />
+
+    <Button
+        android:id="@+id/buttonback"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="@color/purple_500"
+        android:text="Back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
-
-    <!-- Open File Button -->
-    <Button
-        android:id="@+id/buttonDocu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Open Documents"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/uploadButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.45" />
-
-    <!-- Name Input Layout -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameInputLayout"
@@ -86,6 +101,7 @@
 
     <!-- Signature Pad -->
 
+    <!-- Clear Button -->
     <com.github.gcacace.signaturepad.views.SignaturePad
         android:id="@+id/signature_pad"
         android:layout_width="408dp"
@@ -94,25 +110,27 @@
         app:layout_constraintBottom_toTopOf="@+id/clearButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/errorname" />
 
-    <!-- Clear Button -->
+    <!-- Save Button -->
     <Button
         android:id="@+id/clearButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_200"
         android:text="Clear Signature"
         app:layout_constraintEnd_toStartOf="@+id/signButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signature_pad"
         app:layout_constraintWidth_percent="0.45" />
 
-    <!-- Save Button -->
     <Button
         android:id="@+id/signButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_700"
         android:text="Save Signature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/clearButton"

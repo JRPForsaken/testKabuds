@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     //private lateinit var printName: TextView
     private lateinit var nameInput: TextView
     private lateinit var errorText: TextView
-    private lateinit var buttonDocu: Button
+    private lateinit var buttonback: Button
 
     private lateinit var pdfView: PDFView
     private var savedBitmapPath: String? = null
@@ -94,18 +94,23 @@ class MainActivity : AppCompatActivity() {
         nameInput = findViewById(R.id.textInputEditText)
         errorText = findViewById(R.id.errorname)
         pdfView = findViewById(R.id.pdfView)
-        buttonDocu = findViewById(R.id.buttonDocu)
+        buttonback = findViewById(R.id.buttonback)
     }
 
     private fun setupClickListeners() {
         buttonSign.setOnClickListener { handleSignature() }
         buttonClear.setOnClickListener { clearSignature() }
         uploadButton.setOnClickListener { uploadPdfFile() }
-        buttonDocu.setOnClickListener { openSignedPdfDirectory() }
+        buttonback.setOnClickListener { onBackPressed() }
     }
-
-
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Start HomeActivity when the back button is pressed
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish() // Close MainActivityTagalog to prevent returning to it
+    }
+    //HMM
     private fun openSignedPdfDirectory() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
