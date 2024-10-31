@@ -70,15 +70,15 @@ class MainActivity_Tagalog : AppCompatActivity() {
         }
 
         // Dynamically scale elements based on screen density
-        scaleViews()
+        //scaleViews()
     }
 
-    private fun scaleViews() {
+    /*private fun scaleViews() {
         // Example of scaling signature pad's height
         signaturePad.layoutParams.width = (579 * density).toInt()
         signaturePad.layoutParams.height = (131 * density).toInt()
         signaturePad.requestLayout()
-    }
+    }*/
 
     private fun requestStoragePermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)

@@ -282,8 +282,8 @@ class MainActivity : AppCompatActivity() {
                         "Sign", "signature", "Signature:" -> {
                             val signatureImageData = ImageDataFactory.create(signaturePath)
                             // Adjust the y-coordinate to place the signature below the field
-                            val adjustedY = position.y - 390 // Adjust as needed
-                            pdfCanvas.addImage(signatureImageData, position.x + 10, adjustedY - 120, 100f, false)
+                            val adjustedY = position.y - 370 // Adjust as needed
+                            pdfCanvas.addImage(signatureImageData, position.x + 30, adjustedY - 120, 100f, false)
                             Log.d("PDF Modification", "Placed signature at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
                         "Date", "date", "Date:", "On the" -> {

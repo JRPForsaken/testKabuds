@@ -5,54 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B4F6D1F8"
-    tools:context=".MainActivity">
+    android:background="#B4FFFFFF"
+    tools:context=".MainActivity_Tagalog">
 
-    <!-- PDF Viewer -->
-
-    <!-- Upload Button -->
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="@dimen/_318sdp"
-        android:layout_height="@dimen/_250sdp"
-        app:layout_constraintTop_toBottomOf="@+id/signature_pad"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/bottom_wave2"
-        tools:layout_editor_absoluteY="@dimen/_579sdp"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="@dimen/_320sdp"
-        android:layout_height="@dimen/_210sdp"
-        app:srcCompat="@drawable/top_background"
-        tools:ignore="MissingConstraints"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="dimen/_5ssp"
-        tools:layout_editor_absoluteY="-dimen/_-ssp" />
-
-    <com.github.barteksc.pdfviewer.PDFView
-        android:id="@+id/pdfView"
-        android:layout_width="812dp"
-        android:layout_height="776dp"
-        app:layout_constraintBottom_toTopOf="@+id/nameInputLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.35"
-        app:layout_constraintHorizontal_bias="0.525"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/uploadButton" />
-
-    <!-- Open File Button -->
-
-    <!-- Name Input Layout -->
-
+    <!-- Decorative Images -->
     <Button
-        android:id="@+id/uploadButton"
-        android:layout_width="@dimen/_135sdp"
-        android:layout_height="@dimen/_37sdp"
+        android:id="@+id/uploadButton2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/purple_200"
         android:text="Upload PDF"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,20 +22,101 @@
         app:layout_constraintWidth_percent="0.45" />
 
     <Button
-        android:id="@+id/buttonback"
-        android:layout_width="@dimen/_135sdp"
-        android:layout_height="@dimen/_37sdp"
-        android:layout_marginStart="@dimen/_15ssp"
+        android:id="@+id/buttonback2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:backgroundTint="@color/purple_500"
         android:text="Back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.45" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="@dimen/_318sdp"
+        android:layout_height="@dimen/_250sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/top_wave"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="@dimen/_318sdp"
+        android:layout_height="@dimen/_250sdp"
+        app:layout_constraintTop_toBottomOf="@+id/signature_pad"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bottom_wave"
+        tools:layout_editor_absoluteY="@dimen/_579sdp"
+        tools:ignore="MissingConstraints" />
+
+    <!-- PDF Viewer -->
+    <com.github.barteksc.pdfviewer.PDFView
+        android:id="@+id/pdfView"
+        android:layout_width="833dp"
+        android:layout_height="488dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintHorizontal_bias="0.525"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/uploadButton">
+
+        <Button
+            android:id="@+id/uploadButton3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/purple_200"
+            android:text="Upload PDF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.448"
+            app:layout_constraintStart_toEndOf="@+id/buttonback"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.45" />
+
+        <Button
+            android:id="@+id/buttonback3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:backgroundTint="@color/purple_500"
+            android:text="Back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.45" />
+    </com.github.barteksc.pdfviewer.PDFView>
+
+    <!-- Upload, Open File, and Back Buttons -->
+
+    <!-- Name Input Layout -->
+    <Button
+        android:id="@+id/uploadButton"
+        android:layout_width="@dimen/_135sdp"
+        android:layout_height="@dimen/_37sdp"
+        android:backgroundTint="@color/orange"
+        android:text="Mag-Upload ng PDF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonback2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.45" />
+
+    <Button
+        android:id="@+id/buttonback"
+        android:layout_width="@dimen/_135sdp"
+        android:layout_height="@dimen/_37sdp"
+        android:backgroundTint="@color/orange"
+        android:text="Balik"
+        app:layout_constraintEnd_toStartOf="@+id/uploadButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.45" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/nameInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="658dp"
+        android:layout_height="88dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pdfView"
@@ -85,7 +126,8 @@
             android:id="@+id/textInputEditText"
             android:layout_width="@dimen/_285sdp"
             android:layout_height="@dimen/_30sdp"
-            android:hint="Enter your name"
+            android:textSize="20sp"
+            android:hint="Ilagay ang iyong pangalan"
             android:padding="@dimen/_8sdp"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -96,7 +138,7 @@
         android:layout_width="@dimen/_250sdp"
         android:layout_height="@dimen/_20sdp"
         android:textColor="#FF0000"
-        android:textSize="@dimen/_10ssp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameInputLayout"
@@ -104,7 +146,7 @@
 
     <!-- Signature Pad -->
 
-    <!-- Clear Button -->
+    <!-- Clear and Save Buttons -->
     <com.github.gcacace.signaturepad.views.SignaturePad
         android:id="@+id/signature_pad"
         android:layout_width="@dimen/_317sdp"
@@ -117,12 +159,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/errorname" />
 
-    <!-- Save Button -->
     <Button
         android:id="@+id/clearButton"
         android:layout_width="@dimen/_135sdp"
         android:layout_height="@dimen/_37sdp"
-        android:backgroundTint="@color/purple_200"
+        android:backgroundTint="@color/orange"
         android:text="Clear Signature"
         app:layout_constraintEnd_toStartOf="@+id/signButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +174,7 @@
         android:id="@+id/signButton"
         android:layout_width="@dimen/_135sdp"
         android:layout_height="@dimen/_37sdp"
-        android:backgroundTint="@color/purple_700"
+        android:backgroundTint="@color/orange"
         android:text="Save Signature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/clearButton"
