@@ -8,12 +8,16 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home)
-
-        // Initialize the button and set an onClickListener
-        val openPdfButton: Button = findViewById(R.id.button2)
-        openPdfButton.setOnClickListener {
-            // Launch the PDF signer activity
+        // Waiver button to open MainActivity
+        val waiverButton: Button = findViewById(R.id.button2)
+        waiverButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+        // Family Waiver button to open MainActivityTagalog
+        val familyWaiverButton: Button = findViewById(R.id.button3)
+        familyWaiverButton.setOnClickListener {
+            val intent = Intent(this, MainActivity_Tagalog::class.java)
             startActivity(intent)
         }
     }
