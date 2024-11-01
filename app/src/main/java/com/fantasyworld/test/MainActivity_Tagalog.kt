@@ -262,40 +262,40 @@ class MainActivity_Tagalog : AppCompatActivity() {
 
             // Initialize font
             val font = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA)
-            val detectedFields = detectFieldsInPdf(pdfDoc, listOf("Name", "Sign", "Date", "signature", "date"))
+            val detectedFields = detectFieldsInPdf(pdfDoc, listOf("Pangalan", "pangalan", "Lagda", "lagda","Petsa", "petsa"))
 
             if (detectedFields.isNotEmpty()) {
                 for ((field, position) in detectedFields) {
                     val pdfCanvas = PdfCanvas(pdfDoc.getPage(position.pageNumber))
 
                     when (field) {
-                        "Name", "name", "Name:", "I am" -> {
+                        "Pangalan", "pangalan", "Pangalan:", "Ako si" -> {
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
                             // Adjust the y-coordinate to place the name below the field
-                            val adjustedY = position.y - 455 // Adjust as needed
-                            pdfCanvas.moveText((position.x + 12).toDouble(), adjustedY.toDouble())
+                            val adjustedY = position.y - 420 // Adjust as needed
+                            pdfCanvas.moveText((position.x + 69).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(userName)
                             pdfCanvas.endText()
-                            Log.d("PDF Modification", "Placed name at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
+                            Log.d("PDF Modification", "Placed pangalan at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
-                        "Sign", "signature", "Signature:" -> {
+                        "Lagda", "lagda", "Lagda:" -> {
                             val signatureImageData = ImageDataFactory.create(signaturePath)
                             // Adjust the y-coordinate to place the signature below the field
                             val adjustedY = position.y - 380 // Adjust as needed
-                            pdfCanvas.addImage(signatureImageData, position.x + 10, adjustedY - 120, 100f, false)
-                            Log.d("PDF Modification", "Placed signature at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
+                            pdfCanvas.addImage(signatureImageData, position.x + 50, adjustedY - 85, 100f, false)
+                            Log.d("PDF Modification", "Placed lagda at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
-                        "Date", "date", "Date:", "On the" -> {
+                        "Petsa", "petsa", "Petsa:", "sa" -> {
                             val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
                             // Adjust the y-coordinate to place the date below the field
-                            val adjustedY = position.y - 515 // Adjust as needed
-                            pdfCanvas.moveText((position.x + 10).toDouble(), adjustedY.toDouble())
+                            val adjustedY = position.y - 488 // Adjust as needed
+                            pdfCanvas.moveText((position.x + 40).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(currentDate)
                             pdfCanvas.endText()
-                            Log.d("PDF Modification", "Placed date at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
+                            Log.d("PDF Modification", "Placed petsa at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
                     }
                 }
