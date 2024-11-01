@@ -55,8 +55,8 @@
     <!-- PDF Viewer -->
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdfView"
-        android:layout_width="833dp"
-        android:layout_height="488dp"
+        android:layout_width="727dp"
+        android:layout_height="490dp"
         app:layout_constraintBottom_toTopOf="@+id/nameInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.35"
@@ -97,6 +97,7 @@
         android:layout_height="@dimen/_37sdp"
         android:backgroundTint="@color/orange"
         android:text="Mag-Upload ng PDF"
+        android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/buttonback2"
         app:layout_constraintTop_toTopOf="parent"
@@ -108,6 +109,7 @@
         android:layout_height="@dimen/_37sdp"
         android:backgroundTint="@color/orange"
         android:text="Balik"
+        android:textSize="34sp"
         app:layout_constraintEnd_toStartOf="@+id/uploadButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -126,10 +128,10 @@
             android:id="@+id/textInputEditText"
             android:layout_width="@dimen/_285sdp"
             android:layout_height="@dimen/_30sdp"
-            android:textSize="20sp"
             android:hint="Ilagay ang iyong pangalan"
             android:padding="@dimen/_8sdp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Error Text -->
@@ -149,8 +151,8 @@
     <!-- Clear and Save Buttons -->
     <com.github.gcacace.signaturepad.views.SignaturePad
         android:id="@+id/signature_pad"
-        android:layout_width="@dimen/_317sdp"
-        android:layout_height="@dimen/_160sdp"
+        android:layout_width="802dp"
+        android:layout_height="310dp"
         android:background="#999999"
         app:layout_constraintBottom_toTopOf="@+id/clearButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -165,6 +167,7 @@
         android:layout_height="@dimen/_37sdp"
         android:backgroundTint="@color/orange"
         android:text="Clear Signature"
+        android:textSize="34sp"
         app:layout_constraintEnd_toStartOf="@+id/signButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signature_pad"
@@ -176,6 +179,7 @@
         android:layout_height="@dimen/_37sdp"
         android:backgroundTint="@color/orange"
         android:text="Save Signature"
+        android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/clearButton"
         app:layout_constraintTop_toBottomOf="@id/signature_pad"

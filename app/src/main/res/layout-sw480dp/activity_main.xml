@@ -16,12 +16,12 @@
         android:id="@+id/imageView9"
         android:layout_width="@dimen/_320sdp"
         android:layout_height="@dimen/_220sdp"
-        app:layout_constraintTop_toBottomOf="@+id/signature_pad"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signature_pad"
         app:srcCompat="@drawable/bottom_wave2"
-        tools:layout_editor_absoluteY="@dimen/_579sdp"
         tools:ignore="MissingConstraints" />
 
     <ImageView
