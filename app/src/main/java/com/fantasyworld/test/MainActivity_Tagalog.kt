@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -71,6 +72,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
 
         // Dynamically scale elements based on screen density
         //scaleViews()
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
 
     /*private fun scaleViews() {
@@ -269,7 +271,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
                     val pdfCanvas = PdfCanvas(pdfDoc.getPage(position.pageNumber))
 
                     when (field) {
-                        "Pangalan", "pangalan", "Pangalan:", "Ako si" -> {
+                        "Pangalan", "pangalan", "Pangalan:", "Ako si", "pangalan:" -> {
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
                             // Adjust the y-coordinate to place the name below the field
@@ -279,14 +281,14 @@ class MainActivity_Tagalog : AppCompatActivity() {
                             pdfCanvas.endText()
                             Log.d("PDF Modification", "Placed pangalan at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
-                        "Lagda", "lagda", "Lagda:" -> {
+                        "Lagda", "lagda", "Lagda:", "lagda:" -> {
                             val signatureImageData = ImageDataFactory.create(signaturePath)
                             // Adjust the y-coordinate to place the signature below the field
                             val adjustedY = position.y - 380 // Adjust as needed
                             pdfCanvas.addImage(signatureImageData, position.x + 50, adjustedY - 85, 100f, false)
                             Log.d("PDF Modification", "Placed lagda at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
-                        "Petsa", "petsa", "Petsa:", "sa" -> {
+                        "Petsa", "petsa", "Petsa:", "petsa:" -> {
                             val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)

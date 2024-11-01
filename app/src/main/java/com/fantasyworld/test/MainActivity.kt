@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -54,7 +55,9 @@ class MainActivity : AppCompatActivity() {
     private var savedBitmapPath: String? = null
     private var pdfFilePath: String? = null
     private val density by lazy { resources.displayMetrics.density }
+    private var isPDFpresent = false
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         // Dynamically scale elements based on screen density
         //scaleViews()
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
 
 
@@ -98,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         uploadButton.setOnClickListener { uploadPdfFile() }
         buttonback.setOnClickListener { onBackPressed() }
     }
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         super.onBackPressed()
         // Start HomeActivity when the back button is pressed
@@ -151,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("Recycle")
     private fun getRealPathFromURI(contentUri: Uri): String? {
         val fileDescriptor = contentResolver.openFileDescriptor(contentUri, "r") ?: return null
         val inputStream = FileInputStream(fileDescriptor.fileDescriptor)

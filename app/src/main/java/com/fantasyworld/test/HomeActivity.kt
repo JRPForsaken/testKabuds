@@ -1,5 +1,6 @@
 package com.fantasyworld.test
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -20,5 +21,6 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity_Tagalog::class.java)
             startActivity(intent)
         }
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
 }

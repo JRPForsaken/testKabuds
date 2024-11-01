@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -70,7 +71,7 @@ class MainActivityTagalog : AppCompatActivity() {
         }
 
         // Dynamically scale elements based on screen density
-        scaleViews()
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
 
     private fun scaleViews() {
