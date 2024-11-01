@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ExtraText">
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
         tools:ignore="SelectedPhotoAccess" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -10,7 +11,6 @@
 
 
     <application
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,8 +21,6 @@
         android:theme="@style/Theme.Test"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
-
-
         <!-- Set HomeActivity as the launch activity -->
         <activity
             android:name=".HomeActivity"
@@ -33,7 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <!-- Keep MainActivity, but without the launcher intent filter -->
         <activity
             android:name=".MainActivity"
@@ -41,10 +38,9 @@
             tools:ignore="Instantiatable,MissingClass" />
         <!-- Add HomeActivityTagalog -->
         <activity
-            android:name=".MainActivityTagalog"
+            android:name=".MainActivity_Tagalog"
             android:exported="true"
             tools:ignore="Instantiatable" />
         <profileable android:shell="true" />
     </application>
-
 </manifest>

@@ -17,7 +17,7 @@ class HomeActivity : AppCompatActivity() {
         // Family Waiver button to open MainActivityTagalog
         val familyWaiverButton: Button = findViewById(R.id.button3)
         familyWaiverButton.setOnClickListener {
-            val intent = Intent(this, MainActivityTagalog::class.java)
+            val intent = Intent(this, MainActivity_Tagalog::class.java)
             startActivity(intent)
         }
     }
