@@ -11,7 +11,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--repackageclasses ''
+-repackageclasses 'com.fantasyworld.test'
 -allowaccessmodification
 -dontusemixedcaseclassnames
 -optimizationpasses 5

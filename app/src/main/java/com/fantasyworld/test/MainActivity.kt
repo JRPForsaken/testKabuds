@@ -254,7 +254,14 @@ class MainActivity : AppCompatActivity() {
         try {
             val documentsDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "SignedPDF")
             if (!documentsDir.exists()) documentsDir.mkdirs()
-            val outputFile = File(documentsDir, "$userName-signed.pdf")
+
+            // Generate a unique filename by checking if files with the same name already exist
+            var outputFile = File(documentsDir, "$userName-signed.pdf")
+            var counter = 1
+            while (outputFile.exists()) {
+                outputFile = File(documentsDir, "$userName($counter)-signed.pdf")
+                counter++
+            }
 
             val pdfReader = PdfReader(File(pdfFilePath))
             val pdfWriter = PdfWriter(outputFile)
@@ -273,7 +280,6 @@ class MainActivity : AppCompatActivity() {
                         "Name", "name", "Name:", "I am" -> {
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
-                            // Adjust the y-coordinate to place the name below the field
                             val adjustedY = position.y - 455 // Adjust as needed
                             pdfCanvas.moveText((position.x + 12).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(userName)
@@ -282,17 +288,15 @@ class MainActivity : AppCompatActivity() {
                         }
                         "Sign", "signature", "Signature:" -> {
                             val signatureImageData = ImageDataFactory.create(signaturePath)
-                            // Adjust the y-coordinate to place the signature below the field
                             val adjustedY = position.y - 370 // Adjust as needed
-                            pdfCanvas.addImage(signatureImageData, position.x + 30, adjustedY - 120, 100f, false)
+                            pdfCanvas.addImage(signatureImageData, position.x + 35, adjustedY - 120, 70f, false)
                             Log.d("PDF Modification", "Placed signature at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
                         "Date", "date", "Date:", "On the" -> {
                             val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
-                            // Adjust the y-coordinate to place the date below the field
-                            val adjustedY = position.y - 515 // Adjust as needed
+                            val adjustedY = position.y - 513 // Adjust as needed
                             pdfCanvas.moveText((position.x + 10).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(currentDate)
                             pdfCanvas.endText()
@@ -313,6 +317,7 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(findViewById(android.R.id.content), "Error on modifying!", Snackbar.LENGTH_SHORT).show()
         }
     }
+
 
     private fun detectFieldsInPdf(pdfDoc: PdfDocument, fields: List<String>): Map<String, Position> {
         val fieldPositions = mutableMapOf<String, Position>()
