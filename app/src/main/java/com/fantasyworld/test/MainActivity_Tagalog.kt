@@ -255,7 +255,16 @@ class MainActivity_Tagalog : AppCompatActivity() {
         try {
             val documentsDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "SignedPDF")
             if (!documentsDir.exists()) documentsDir.mkdirs()
-            val outputFile = File(documentsDir, "$userName-signed.pdf")
+
+            // Generate the initial file name
+            var outputFile = File(documentsDir, "$userName-Signed.pdf")
+            var fileIndex = 1
+
+            // Check if the file exists and increment the index until we find a unique name
+            while (outputFile.exists()) {
+                outputFile = File(documentsDir, "$userName($fileIndex)-Signed.pdf")
+                fileIndex++
+            }
 
             val pdfReader = PdfReader(File(pdfFilePath))
             val pdfWriter = PdfWriter(outputFile)
@@ -314,6 +323,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
             Snackbar.make(findViewById(android.R.id.content), "Error on modifying!", Snackbar.LENGTH_SHORT).show()
         }
     }
+
 
     private fun detectFieldsInPdf(pdfDoc: PdfDocument, fields: List<String>): Map<String, Position> {
         val fieldPositions = mutableMapOf<String, Position>()
