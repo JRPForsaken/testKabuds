@@ -279,16 +279,16 @@ class MainActivity : AppCompatActivity() {
                     when (field) {
                         "Name", "name", "Name:", "I am" -> {
                             pdfCanvas.beginText()
-                            pdfCanvas.setFontAndSize(font, 12f)
-                            val adjustedY = position.y - 455 // Adjust as needed
-                            pdfCanvas.moveText((position.x + 12).toDouble(), adjustedY.toDouble())
+                            pdfCanvas.setFontAndSize(font, 14f)
+                            val adjustedY = position.y - 12 // Adjust as needed
+                            pdfCanvas.moveText((position.x + 14).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(userName)
                             pdfCanvas.endText()
                             Log.d("PDF Modification", "Placed name at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
                         "Sign", "signature", "Signature:" -> {
                             val signatureImageData = ImageDataFactory.create(signaturePath)
-                            val adjustedY = position.y - 370 // Adjust as needed
+                            val adjustedY = position.y + 70 // Adjust as needed
                             pdfCanvas.addImage(signatureImageData, position.x + 35, adjustedY - 120, 70f, false)
                             Log.d("PDF Modification", "Placed signature at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
@@ -296,7 +296,7 @@ class MainActivity : AppCompatActivity() {
                             val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
-                            val adjustedY = position.y - 513 // Adjust as needed
+                            val adjustedY = position.y - 70 // Adjust as needed
                             pdfCanvas.moveText((position.x + 10).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(currentDate)
                             pdfCanvas.endText()
@@ -348,4 +348,3 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(findViewById(android.R.id.content),"Cleared Signature", Snackbar.LENGTH_SHORT).show()
     }
 }
-
