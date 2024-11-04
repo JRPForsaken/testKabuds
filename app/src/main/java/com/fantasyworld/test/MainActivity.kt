@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         //scaleViews()
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
+
     private fun enableSignButton(enable: Boolean) {
         buttonSign.isEnabled = enable
         val color = if (enable) {
@@ -158,6 +159,7 @@ class MainActivity : AppCompatActivity() {
             signaturePad.clear()
             nameInput.text = null
         }
+        enableSignButton(false)  // Disable the sign button when uploading a new PDF
         startActivityForResult(intent, pickPDFFile)
     }
 
@@ -170,7 +172,7 @@ class MainActivity : AppCompatActivity() {
                 pdfFilePath?.let { path ->
                     saveLastPickedPdfPath(path)
                     readPdfFile(path)
-                    enableSignButton(true) // Enable the sign button and set its color
+                    enableSignButton(true)  // Enable the sign button after successful PDF upload
                     Snackbar.make(findViewById(android.R.id.content), "PDF uploaded successfully!", Snackbar.LENGTH_SHORT).show()
                 }
             }

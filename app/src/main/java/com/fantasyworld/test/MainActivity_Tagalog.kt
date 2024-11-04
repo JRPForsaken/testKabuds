@@ -142,6 +142,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
             signaturePad.clear()
             nameInput.text = null
         }
+        enableSignButton(false)  // Disable the sign button when uploading a new PDF
         startActivityForResult(intent, pickPDFFile)
     }
 
