@@ -6,7 +6,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -37,6 +39,7 @@ import java.util.Date
 import java.util.Locale
 import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -70,11 +73,24 @@ class MainActivity : AppCompatActivity() {
         pdfFilePath = loadLastPickedPdfPath()
         if (pdfFilePath != null) {
             readPdfFile(pdfFilePath!!)
+            enableSignButton(true)
+        } else {
+            enableSignButton(false)
         }
 
         // Dynamically scale elements based on screen density
         //scaleViews()
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+    }
+    private fun enableSignButton(enable: Boolean) {
+        buttonSign.isEnabled = enable
+        val color = if (enable) {
+            ContextCompat.getColor(this, R.color.original_button_colorEN)
+        } else {
+            Color.GRAY
+        }
+        buttonSign.setBackgroundColor(color)
+        Log.d("ButtonColor", "Button enabled: $enable, Color set: $color")
     }
 
 
@@ -149,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                 pdfFilePath?.let { path ->
                     saveLastPickedPdfPath(path)
                     readPdfFile(path)
-                    //filePathTextView.text = path
+                    enableSignButton(true) // Enable the sign button and set its color
                     Snackbar.make(findViewById(android.R.id.content), "PDF uploaded successfully!", Snackbar.LENGTH_SHORT).show()
                 }
             }
