@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.provider.DocumentsContract
+import android.view.View
 
 class MainActivity_Tagalog : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -180,11 +181,18 @@ class MainActivity_Tagalog : AppCompatActivity() {
                 .enableDoubletap(true)
                 .defaultPage(0)
                 .scrollHandle(DefaultScrollHandle(this))
-                .spacing((10 * density).toInt())
+                .spacing((10 * density).toInt()) // Scaled spacing
                 .pageFitPolicy(FitPolicy.WIDTH)
-                .load()
+                .load()  // Add this line to load the PDF
+
+            // Make sure the PDFView is visible
+            pdfView.visibility = View.VISIBLE
+
+            // Log success message
+            Log.d("PDF Reader", "PDF loaded successfully: $filePath")
         } else {
-            Log.e("PDF Reader", "File does not exist")
+            Log.e("PDF Reader", "File does not exist: $filePath")
+            Snackbar.make(findViewById(android.R.id.content), "Error: PDF file not found", Snackbar.LENGTH_LONG).show()
         }
     }
 

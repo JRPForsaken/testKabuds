@@ -12,4 +12,7 @@
     <color name="pink">#B24FA9</color>
     <color name="original_button_colorEN">#FF6200EE</color>
     <color name="original_button_colorFIL">#FF5722</color>
+    <color name="seekbar_color">#FF0000</color> <!-- Example color for progress -->
+    <color name="seekbar_thumb_color">#00FF00</color> <!-- Example color for thumb -->
+    <color name="seekbar_background">#0000FF</color> <!-- Example color for background -->
 </resources>

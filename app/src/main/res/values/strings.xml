@@ -9,4 +9,6 @@
     <string name="view_signature_test1">Signature</string>
     <string name="upload_contract1">Upload File</string>
     <string name="no_file_selected1">no file selected</string>
+    <string name="bottom_wave_image">Bottom wave image</string>
+    <string name="top_background_image">Top background image</string>
 </resources>
