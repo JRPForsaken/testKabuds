@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -37,6 +38,7 @@ import java.util.Date
 import java.util.Locale
 import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
+import androidx.core.content.ContextCompat
 
 class MainActivityTagalog : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -68,10 +70,24 @@ class MainActivityTagalog : AppCompatActivity() {
         pdfFilePath = loadLastPickedPdfPath()
         if (pdfFilePath != null) {
             readPdfFile(pdfFilePath!!)
+            enableSignButton(true)
+        } else {
+            enableSignButton(false)
         }
 
         // Dynamically scale elements based on screen density
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+    }
+
+    private fun enableSignButton(enable: Boolean) {
+        buttonSign.isEnabled = enable
+        val color = if (enable) {
+            ContextCompat.getColor(this, R.color.original_button_colorFIL)
+        } else {
+            Color.GRAY
+        }
+        buttonSign.setBackgroundColor(color)
+        Log.d("ButtonColor", "Button enabled: $enable, Color set: $color")
     }
 
     private fun scaleViews() {

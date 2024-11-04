@@ -6,7 +6,9 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -37,6 +39,7 @@ import java.util.Date
 import java.util.Locale
 import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -70,11 +73,24 @@ class MainActivity : AppCompatActivity() {
         pdfFilePath = loadLastPickedPdfPath()
         if (pdfFilePath != null) {
             readPdfFile(pdfFilePath!!)
+            enableSignButton(true)
+        } else {
+            enableSignButton(false)
         }
 
         // Dynamically scale elements based on screen density
         //scaleViews()
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
+    }
+    private fun enableSignButton(enable: Boolean) {
+        buttonSign.isEnabled = enable
+        val color = if (enable) {
+            ContextCompat.getColor(this, R.color.original_button_colorEN)
+        } else {
+            Color.GRAY
+        }
+        buttonSign.setBackgroundColor(color)
+        Log.d("ButtonColor", "Button enabled: $enable, Color set: $color")
     }
 
 
@@ -149,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                 pdfFilePath?.let { path ->
                     saveLastPickedPdfPath(path)
                     readPdfFile(path)
-                    //filePathTextView.text = path
+                    enableSignButton(true) // Enable the sign button and set its color
                     Snackbar.make(findViewById(android.R.id.content), "PDF uploaded successfully!", Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -279,16 +295,16 @@ class MainActivity : AppCompatActivity() {
                     when (field) {
                         "Name", "name", "Name:", "I am" -> {
                             pdfCanvas.beginText()
-                            pdfCanvas.setFontAndSize(font, 12f)
-                            val adjustedY = position.y - 455 // Adjust as needed
-                            pdfCanvas.moveText((position.x + 12).toDouble(), adjustedY.toDouble())
+                            pdfCanvas.setFontAndSize(font, 14f)
+                            val adjustedY = position.y - 12 // Adjust as needed
+                            pdfCanvas.moveText((position.x + 14).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(userName)
                             pdfCanvas.endText()
                             Log.d("PDF Modification", "Placed name at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
                         "Sign", "signature", "Signature:" -> {
                             val signatureImageData = ImageDataFactory.create(signaturePath)
-                            val adjustedY = position.y - 370 // Adjust as needed
+                            val adjustedY = position.y + 70 // Adjust as needed
                             pdfCanvas.addImage(signatureImageData, position.x + 35, adjustedY - 120, 70f, false)
                             Log.d("PDF Modification", "Placed signature at page ${position.pageNumber} at x=${position.x + 10}, y=$adjustedY")
                         }
@@ -296,7 +312,7 @@ class MainActivity : AppCompatActivity() {
                             val currentDate = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(Date())
                             pdfCanvas.beginText()
                             pdfCanvas.setFontAndSize(font, 12f)
-                            val adjustedY = position.y - 513 // Adjust as needed
+                            val adjustedY = position.y - 70 // Adjust as needed
                             pdfCanvas.moveText((position.x + 10).toDouble(), adjustedY.toDouble())
                             pdfCanvas.showText(currentDate)
                             pdfCanvas.endText()
@@ -348,4 +364,3 @@ class MainActivity : AppCompatActivity() {
         Snackbar.make(findViewById(android.R.id.content),"Cleared Signature", Snackbar.LENGTH_SHORT).show()
     }
 }
-

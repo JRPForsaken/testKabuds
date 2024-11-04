@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,10 +17,12 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import com.github.barteksc.pdfviewer.util.FitPolicy
 import com.github.gcacace.signaturepad.views.SignaturePad
+import com.google.android.material.snackbar.Snackbar
 import com.itextpdf.io.image.ImageDataFactory
 import com.itextpdf.kernel.font.PdfFontFactory
 import com.itextpdf.kernel.pdf.PdfDocument
@@ -35,18 +38,15 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
 
 class MainActivity_Tagalog : AppCompatActivity() {
     private val pickPDFFile = 2001
     private val pdfFilePrefKey = "last_picked_pdf"
-    //private lateinit var filePathTextView: TextView
     private lateinit var uploadButton: Button
     private lateinit var signaturePad: SignaturePad
     private lateinit var buttonClear: Button
     private lateinit var buttonSign: Button
-    //private lateinit var printName: TextView
     private lateinit var nameInput: TextView
     private lateinit var errorText: TextView
     private lateinit var buttonback: Button
@@ -68,31 +68,34 @@ class MainActivity_Tagalog : AppCompatActivity() {
         pdfFilePath = loadLastPickedPdfPath()
         if (pdfFilePath != null) {
             readPdfFile(pdfFilePath!!)
+            enableSignButton(true)
+        } else {
+            enableSignButton(false)
         }
 
-        // Dynamically scale elements based on screen density
-        //scaleViews()
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
 
-    /*private fun scaleViews() {
-        // Example of scaling signature pad's height
-        signaturePad.layoutParams.width = (579 * density).toInt()
-        signaturePad.layoutParams.height = (131 * density).toInt()
-        signaturePad.requestLayout()
-    }*/
+    private fun enableSignButton(enable: Boolean) {
+        buttonSign.isEnabled = enable
+        val color = if (enable) {
+            ContextCompat.getColor(this, R.color.original_button_colorFIL)
+        } else {
+            Color.GRAY
+        }
+        buttonSign.setBackgroundColor(color)
+        Log.d("ButtonColor", "Button enabled: $enable, Color set: $color")
+    }
 
     private fun requestStoragePermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
     }
 
     private fun initViews() {
-        //filePathTextView = findViewById(R.id.filePathTextView)
         uploadButton = findViewById(R.id.uploadButton)
         signaturePad = findViewById(R.id.signature_pad)
         buttonClear = findViewById(R.id.clearButton)
         buttonSign = findViewById(R.id.signButton)
-        //printName = findViewById(R.id.printname)
         nameInput = findViewById(R.id.textInputEditText)
         errorText = findViewById(R.id.errorname)
         pdfView = findViewById(R.id.pdfView)
@@ -105,14 +108,14 @@ class MainActivity_Tagalog : AppCompatActivity() {
         uploadButton.setOnClickListener { uploadPdfFile() }
         buttonback.setOnClickListener { onBackPressed() }
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
-        // Start HomeActivity when the back button is pressed
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-        finish() // Close MainActivityTagalog to prevent returning to it
+        finish()
     }
-    //HMM
+
     private fun openSignedPdfDirectory() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
@@ -132,7 +135,6 @@ class MainActivity_Tagalog : AppCompatActivity() {
         }
     }
 
-
     private fun uploadPdfFile() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "application/pdf"
@@ -151,7 +153,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
                 pdfFilePath?.let { path ->
                     saveLastPickedPdfPath(path)
                     readPdfFile(path)
-                    //filePathTextView.text = path
+                    enableSignButton(true)
                     Snackbar.make(findViewById(android.R.id.content), "PDF uploaded successfully!", Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -178,7 +180,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
                 .enableDoubletap(true)
                 .defaultPage(0)
                 .scrollHandle(DefaultScrollHandle(this))
-                .spacing((10 * density).toInt()) // Scaled spacing
+                .spacing((10 * density).toInt())
                 .pageFitPolicy(FitPolicy.WIDTH)
                 .load()
         } else {
@@ -208,8 +210,6 @@ class MainActivity_Tagalog : AppCompatActivity() {
             errorText.text = "Please enter a name/signature."
         } else {
             errorText.text = ""
-            //printName.text = signeeNameText
-
             val transparentBitmap = createTransparentBitmap(originalBitmap)
             savedBitmapPath = saveBitmapToFile(transparentBitmap)
 
@@ -350,6 +350,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
 
     private fun clearSignature() {
         signaturePad.clear()
-        Snackbar.make(findViewById(android.R.id.content),"Cleared Signature", Snackbar.LENGTH_SHORT).show()
+        nameInput.text = null
+        enableSignButton(false)
     }
 }

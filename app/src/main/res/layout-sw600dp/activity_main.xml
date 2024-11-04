@@ -24,16 +24,6 @@
         tools:layout_editor_absoluteY="@dimen/_579sdp"
         tools:ignore="MissingConstraints" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="@dimen/_320sdp"
-        android:layout_height="@dimen/_210sdp"
-        app:srcCompat="@drawable/top_background"
-        tools:ignore="MissingConstraints"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="dimen/_5ssp"
-        tools:layout_editor_absoluteY="-dimen/_-ssp" />
-
     <com.github.barteksc.pdfviewer.PDFView
         android:id="@+id/pdfView"
         android:layout_width="727dp"
@@ -43,7 +33,15 @@
         app:layout_constraintHeight_percent="0.35"
         app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/uploadButton" />
+        app:layout_constraintTop_toBottomOf="@id/uploadButton" >
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="@dimen/_320sdp"
+            android:layout_height="@dimen/_210sdp"
+            app:srcCompat="@drawable/top_background"
+            tools:ignore="MissingConstraints" />
+    </com.github.barteksc.pdfviewer.PDFView>
 
     <!-- Open File Button -->
 
