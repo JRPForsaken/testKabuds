@@ -11,4 +11,6 @@
     <string name="no_file_selected1">no file selected</string>
     <string name="bottom_wave_image">Bottom wave image</string>
     <string name="top_background_image">Top background image</string>
+    <string name="ilagay_ang_iyong_pangalan">Ilagay ang iyong pangalan</string>
+    <string name="enter_your_name">Enter your name</string>
 </resources>

@@ -40,6 +40,7 @@ import java.util.Date
 import java.util.Locale
 import android.provider.DocumentsContract
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainActivity_Tagalog : AppCompatActivity() {
     private val pickPDFFile = 2001
@@ -59,6 +60,7 @@ class MainActivity_Tagalog : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main_tagalog)
 
         initViews()

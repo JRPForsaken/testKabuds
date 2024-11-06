@@ -41,6 +41,7 @@ import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
 import android.view.View
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main)
 
         initViews()

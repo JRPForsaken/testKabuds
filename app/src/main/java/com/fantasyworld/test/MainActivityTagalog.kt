@@ -39,6 +39,7 @@ import java.util.Locale
 import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 
 class MainActivityTagalog : AppCompatActivity() {
@@ -61,6 +62,7 @@ class MainActivityTagalog : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main)
 
         initViews()
