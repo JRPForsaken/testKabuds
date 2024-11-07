@@ -14,6 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/top_background_image"
+        android:scaleType="centerCrop"
         android:visibility="visible"
         app:layout_constraintDimensionRatio="H,3:2"
         app:layout_constraintEnd_toEndOf="parent"
