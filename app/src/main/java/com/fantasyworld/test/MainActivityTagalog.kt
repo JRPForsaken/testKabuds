@@ -38,6 +38,8 @@ import java.util.Date
 import java.util.Locale
 import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
+import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 
 class MainActivityTagalog : AppCompatActivity() {
@@ -60,6 +62,7 @@ class MainActivityTagalog : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main)
 
         initViews()
@@ -195,9 +198,16 @@ class MainActivityTagalog : AppCompatActivity() {
                 .scrollHandle(DefaultScrollHandle(this))
                 .spacing((10 * density).toInt()) // Scaled spacing
                 .pageFitPolicy(FitPolicy.WIDTH)
-                .load()
+                .load()  // Add this line to load the PDF
+
+            // Make sure the PDFView is visible
+            pdfView.visibility = View.VISIBLE
+
+            // Log success message
+            Log.d("PDF Reader", "PDF loaded successfully: $filePath")
         } else {
-            Log.e("PDF Reader", "File does not exist")
+            Log.e("PDF Reader", "File does not exist: $filePath")
+            Snackbar.make(findViewById(android.R.id.content), "Error: PDF file not found", Snackbar.LENGTH_LONG).show()
         }
     }
 

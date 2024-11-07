@@ -39,6 +39,9 @@ import java.util.Date
 import java.util.Locale
 import com.google.android.material.snackbar.Snackbar
 import android.provider.DocumentsContract
+import android.view.View
+import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
@@ -53,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nameInput: TextView
     private lateinit var errorText: TextView
     private lateinit var buttonback: Button
-
+    private lateinit var pageSlider: SeekBar
     private lateinit var pdfView: PDFView
     private var savedBitmapPath: String? = null
     private var pdfFilePath: String? = null
@@ -63,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_main)
 
         initViews()
@@ -82,6 +86,7 @@ class MainActivity : AppCompatActivity() {
         //scaleViews()
         this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
     }
+
     private fun enableSignButton(enable: Boolean) {
         buttonSign.isEnabled = enable
         val color = if (enable) {
@@ -110,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         errorText = findViewById(R.id.errorname)
         pdfView = findViewById(R.id.pdfView)
         buttonback = findViewById(R.id.buttonback)
+
     }
 
     private fun setupClickListeners() {
@@ -117,7 +123,9 @@ class MainActivity : AppCompatActivity() {
         buttonClear.setOnClickListener { clearSignature() }
         uploadButton.setOnClickListener { uploadPdfFile() }
         buttonback.setOnClickListener { onBackPressed() }
+
     }
+
     @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         super.onBackPressed()
@@ -153,6 +161,7 @@ class MainActivity : AppCompatActivity() {
             signaturePad.clear()
             nameInput.text = null
         }
+        enableSignButton(false)  // Disable the sign button when uploading a new PDF
         startActivityForResult(intent, pickPDFFile)
     }
 
@@ -165,7 +174,7 @@ class MainActivity : AppCompatActivity() {
                 pdfFilePath?.let { path ->
                     saveLastPickedPdfPath(path)
                     readPdfFile(path)
-                    enableSignButton(true) // Enable the sign button and set its color
+                    enableSignButton(true)  // Enable the sign button after successful PDF upload
                     Snackbar.make(findViewById(android.R.id.content), "PDF uploaded successfully!", Snackbar.LENGTH_SHORT).show()
                 }
             }
@@ -195,9 +204,16 @@ class MainActivity : AppCompatActivity() {
                 .scrollHandle(DefaultScrollHandle(this))
                 .spacing((10 * density).toInt()) // Scaled spacing
                 .pageFitPolicy(FitPolicy.WIDTH)
-                .load()
+                .load()  // Add this line to load the PDF
+
+            // Make sure the PDFView is visible
+            pdfView.visibility = View.VISIBLE
+
+            // Log success message
+            Log.d("PDF Reader", "PDF loaded successfully: $filePath")
         } else {
-            Log.e("PDF Reader", "File does not exist")
+            Log.e("PDF Reader", "File does not exist: $filePath")
+            Snackbar.make(findViewById(android.R.id.content), "Error: PDF file not found", Snackbar.LENGTH_LONG).show()
         }
     }
 
